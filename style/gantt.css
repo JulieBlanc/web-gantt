@@ -1,0 +1,268 @@
+
+main{
+    position: relative;
+}
+
+
+
+
+/* SECTION CALENDAR --------------------------------------------------------------------------------------------------- 
+----------------------------------------------------------------------------------------------------------------------- */
+
+
+
+#calendar-gantt{
+    margin-top: var(--header-height);
+    border-bottom: var(--line);
+}
+
+.calendar-container{
+    position: relative;
+    display: grid;
+    grid-template-columns: var(--project-width) repeat(var(--all-days), var(--day-width));
+    grid-template-rows: var(--height-month) var(--day-group-title) repeat(calc(var(--projects) + 1), var(--project-height)) 20vh;
+    width: calc(var(--project-width) + var(--all-days)*var(--day-width));
+}
+
+
+
+.day-grid{
+    height: 100%;
+    grid-row: 2/end;
+    border-left: var(--line-day);
+}
+
+
+
+.div-month + [data-day="01"],
+.group-day-title + [data-day="01"]{
+    /* border-left: none!important; */
+}
+
+
+/* Month title ------------------------------------------------ */ 
+
+.div-month{
+    width: 100%;
+    height: 100%; 
+    grid-row: 1; 
+    transform: translateX(1px);
+    border-right: var(--line-month);
+    border-bottom: var(--line-month);
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 1ch;
+    font-size: 1rem;
+    font-weight: normal;
+}
+
+
+/* Days group title ---------------------------------------------- */
+
+.group-day-title{
+    grid-row: 2; 
+    width:100%;
+    height: var(--day-group-title);
+    border-bottom: var(--line-month);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border-left: var(--line-day);
+    font-family: var(--font-condensed);
+    font-size: 0.7rem;
+}
+
+.day-week-letter { opacity: 0.5 }
+
+.day-week { display: none; }
+
+
+
+
+/* Week-ends and holidays */
+
+[data-day="01"]{
+    border-left: var(--line-month)!important;
+    /* position: relative;  */
+}
+
+[data-dayweek="6"],
+[data-dayweek="0"]{
+    background-color: var(--bg-weekend);
+}
+
+.div-holidays{
+    height: 100%;
+    grid-row: 2/end;
+
+    background: repeating-linear-gradient(45deg, 
+    var(--bg-holiday) 10px,
+    var(--bg-holiday) 12px,
+    transparent 12px,
+    transparent 20px);
+}
+
+
+
+/* SECTION PROJECTS TITLE --------------------------------------------------------------------------------------------------- 
+----------------------------------------------------------------------------------------------------------------------- */
+
+.bg-title-projects{
+    grid-column: 1; 
+    grid-row: 1/end;
+    width: 100%;
+    height: 100%;
+    background-color: var(--bg-color);
+    border-right: var(--line);
+    z-index: 30; 
+}
+
+.header-title-projects{
+    grid-column: 1; 
+    grid-row: 1/3;
+    width: 100%;
+    height: 100%;
+    background-color: var(--bg-color);
+    border-right: var(--line);
+    border-bottom: var(--line);
+    z-index: 99;
+  
+}
+
+.header-title-projects span{
+    display: block;
+    width: 100%;
+    height: 100%;
+    opacity: 0.05;
+    background: repeating-linear-gradient(45deg, 
+    var(--calendar-color) 10px,
+    var(--calendar-color) 12px,
+    transparent 12px,
+    transparent 20px);
+}
+
+
+
+.title-project{
+    width: 100%;
+    height: 100%;
+    border-bottom: var(--line-day);
+    display: flex;
+    align-items: center;
+    padding-left: 20px;
+    font-weight: normal;
+    font-size: 1rem;
+    z-index: 40;
+}
+
+.title-project-hover{
+    --alpha: 0.2;
+    background-color: var(--projects-color);
+    font-weight: bold;
+}
+
+
+.title-project::before{
+    content: '';
+    display: inline-block;
+    width: 1ch;
+    height: 1ch;
+    background-color: var(--projects-color);
+    margin-right: 1ch;
+    
+}
+
+.title-project-hover::before{
+    --alpha: 1;
+    border: 1px solid var(--projects-text-color);
+}
+
+
+
+.title-project:first-of-type{
+    border-top: var(--line-day);
+}
+
+.title-project button{
+    position: absolute; 
+    right: 1ch;
+    background: none;
+    border: 1px solid currentColor;
+    opacity: 0.3;
+    padding: 0 2px;
+    border-radius: 3px;
+    font-size: 0.7rem;
+    display: none;
+}
+
+
+
+
+/* SECTION PROJECTS --------------------------------------------------------------------------------------------------- 
+----------------------------------------------------------------------------------------------------------------------- */
+
+
+
+
+.div-project{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.div-project span{
+    display: block;
+    height: var(--project-height-span);
+    width: 100%;
+    background-color: var(--projects-color);
+
+    
+}
+
+.div-project span::before{
+    content: '';
+    display: block;
+    width: 0;
+      height: 0;
+      border-top: calc(var(--project-height-span)*0.25) solid var(--projects-color);
+      border-right: calc(var(--project-height-span)*0.25) solid transparent;
+      position: relative; 
+      top: var(--project-height-span);
+      z-index: -1;
+      
+}
+
+
+.div-project span::after{
+    content: '';
+    display: block;
+    width: 0px;
+      height: 0px;
+      border-top: calc(var(--project-height-span)*0.25) solid var(--projects-text-color);
+      border-right: calc(var(--project-height-span)*0.25) solid transparent;
+      position: relative; 
+      top: calc(var(--project-height-span) - 3px);
+      left: -3px;
+      display: none;
+}
+
+.project-hover span{
+    border: 3px solid var(--projects-text-color);
+}
+
+.project-hover span::before{
+       display: none;
+}
+
+.project-hover span::after{
+    display: block;
+}
+
+
+

@@ -1,0 +1,258 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    
+    --bg-color: white;
+    background-color: white;
+
+    --header-bg: #cfcfcf;
+
+    --alpha: 1;
+
+    --projects-color: rgba(0, 0, 0, var(--alpha));
+    --calendar-color: rgba(0, 0, 0, var(--alpha));
+
+    --font: 'IBM Plex Sans';
+    --font-condensed: 'IBM Plex Sans Condensed';
+
+    font-family: var(--font);
+
+    --line:  4px double var(--calendar-color);
+    --line-month: 1px solid #222;
+    --line-day: 1px solid #cfcfcf;
+   
+    --bg-weekend: #efefef;
+    --bg-holiday: #efefef;
+
+    --height-month: 30px;
+    --day-group-title: 40px;
+
+    overflow: hidden;
+
+}
+
+
+
+/* SCROLL DIRECTION -----------------------------------------------------*/
+
+
+#calendar-gantt {
+    overflow-x: scroll;
+    overflow-y: scroll;
+    width: 100vw;
+    height: calc(100vh - var(--header-height));
+}
+
+
+[data-scroll="scrollY"] #calendar-gantt{
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+[data-scroll="scrollX"] #calendar-gantt{
+    overflow-x: scroll;
+    overflow-y: hidden;;
+}
+ 
+
+#calendar-gantt .div-month, 
+#calendar-gantt .bg-title-projects,
+#calendar-gantt .header-title-projects,
+#calendar-gantt .title-project,
+#calendar-gantt .group-day-title{
+    position: sticky; 
+}
+
+#calendar-gantt .div-month,
+#calendar-gantt .header-title-projects{
+    top:  0;
+}
+
+#calendar-gantt .title-project,
+#calendar-gantt .bg-title-projects,
+#calendar-gantt .header-title-projects{
+    left: 0;
+}
+#calendar-gantt .group-day-title{
+    top: calc(var(--height-month));
+}  
+
+
+
+
+
+/* HEADER ------------------------------------------------------------- */
+
+
+.header-page{
+    --bg-color: white;
+    --text-color: var(--calendar-color);
+    background-color: var(--bg-color);
+   
+    color: var(--text-color);
+    
+    height: var(--header-height);
+    width: 100vw;
+    padding: 5px 20px;
+    display: flex;
+    align-items: center;
+    z-index: 999;
+    border-bottom: var(--line);
+}
+
+#header{
+    position: fixed;
+    top: 0;
+    left: 0; 
+}
+
+
+
+
+.header-page h1{
+    font-size: 1.2rem;
+    font-weight: normal;
+    width: calc(var(--project-width) - 20px);
+}
+
+.header-page nav{
+    width: 100%;
+    max-width: calc(100% - var(--project-width) - 20px - 140px);
+}
+
+.header-page nav ul{
+    display: flex;
+    list-style-type: none;
+    /* background-color: green; */
+    width: 100%;
+    flex-wrap: wrap;
+    margin-top: 1ch;
+}
+
+.header-page nav ul li{
+    font-size: 0.8rem;
+    margin-right: 4ch;
+    display: flex;
+    align-items: center;
+    margin-bottom: 1ch;
+    min-width: 12ch;
+}
+
+.header-page nav ul li::before{
+    content: '';
+    display: inline-block;
+    width: 1.5ch;
+    height: 1.5ch;
+    background-color: var(--projects-color);
+    margin-right: 1ch;
+    
+}
+
+
+#button-group{
+    position: absolute;
+    right: 20px;
+    display: flex;
+    opacity: 0.2;
+}
+
+#dowload,
+#print-button{
+    --color: black;
+    text-decoration: none;
+    color: var(--color);
+   
+    
+}
+#button-group button img{
+    width: 20px;
+    margin-right: 5px;
+    opacity: 0.9;
+}
+
+#button-group button{
+    --color: black;
+    display: flex;
+    align-items: center;
+    padding: 5px 10px 5px 8px;
+    background: var(--bg-color);
+    border: var(--line-month);
+    border-radius: 5px;
+    font-size: 0.8rem;
+    color: var(--color);
+    cursor: pointer;
+    font-weight: 800;
+    cursor: pointer;
+    margin-left: 20px;
+}
+
+#dowload button:hover,
+#print-button:hover{
+    background-color: #efefef; 
+}
+
+@media screen and (max-width: 920px){
+    #button-group button span{
+        display: none;
+    }
+    #button-group button img{
+        margin-right: 0px
+    }
+    #header nav{
+        display: none;
+    }
+}
+
+
+
+
+/* TEMPORARY SCREENSHOT ------------------------------------------------------------- */
+
+
+#canevas-copy{
+    width: calc(var(--project-width) + var(--all-days)*var(--day-width));
+}
+
+#canevas-copy .header-page,
+#canevas-copy .section-calendar{
+    width: 100%;
+}
+
+
+#canevas-copy .div-holidays{
+    background: var(--bg-holiday)!important;
+}
+
+#canevas-copy{
+    border: 2px solid black;
+}
+
+
+/* PRINT ------------------------------------------------------------- */
+
+#img-print{
+    max-height: 0mm;
+    max-width: 0mm;
+}
+
+@media print{
+
+    #header, #calendar-gantt{
+        display: none;
+    }
+    #img-print{
+        max-height: 200mm;
+        max-width: 290mm;
+        object-fit: contain;
+    }
+
+}
+
+
+

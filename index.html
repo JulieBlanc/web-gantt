@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta http-equiv="Content-Style-Type" content="text/css" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <title>Calendar</title>
+
+    <!-- Métadonnées -->
+    <meta name="robots" content="noindex, nofollow">    
+    <meta name="author" content="" />
+    <meta name="copyright" content="" />
+
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="style/style.css">
+    <link rel="stylesheet" type="text/css" href="style/gantt.css">
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="fonts/compagnon-webfont/stylesheet.css"> 
+    <link rel="stylesheet" href="fonts/IBM-Plex-Sans/stylesheet.css"> 
+    <link rel="stylesheet" href="fonts/IBM-Plex-Sans-Condensed/stylesheet.css"> 
+
+</head>
+
+<body>
+
+    
+    <main id="app" :data-scroll="scrollDirection" :lang="langSite">
+       
+        <!-- Header ______________________________________________________________________________________________________________________________________ 
+        __________________________________________________________________________________________________________________________________________________ -->
+
+        <header id="header" class="header-page">
+            <h1>{{ title }}</h1>
+            <nav>
+                <ul>
+                    <li v-for="(type, index) in allType" :data-type="type">{{ type }}</li>
+                </ul>
+            </nav>
+            <div id="button-group">
+                <a id="dowload"><button><img src="style/download-arrow.png"> <span>Download</span></button></a>
+                <button id="print-button" v-on:click="print()"><img src="style/printing.png"> <span>Print</span></button>
+            </div>
+        </header>
+        
+
+        <!-- Gantt calendar ______________________________________________________________________________________________________________________________ 
+        __________________________________________________________________________________________________________________________________________________ -->
+
+        <section class="section-calendar" id="calendar-gantt" data-type="gantt" :style="{'--projects': projects.length, '--all-days':allDays.length}" >
+            <div class="calendar-container">
+           
+                <!-- Title of projects (left column)-->
+                <div class="bg-title-projects"></div>
+                <div class="header-title-projects"><span></span></div>
+                <h1 v-for="(project, index) in projects" class="title-project" :data-line="index" :data-type="project.type" @mouseover="hoverProject(index, 'title')" @mouseleave="leaveProject(index, 'title')" :style="{'grid-row': index + 3, 'grid-column': '1'}">{{ project.name }} <button v-on:click="goToProject(index, $event)">→</button></h1>
+                <!-- Holidays -->
+                <div v-for="holidays in holidays" class="div-holidays" :style="{'grid-column-start': dayColumn(holidays.start, 'start'), 'grid-column-end': dayColumn(holidays.end, 'end')}"><span></span></div>
+                <!-- Months title -->
+                <h1 v-for="(month, index) in allMonths" class="div-month" :style="{'grid-column-start': dayColumn(month.start, 'start', index), 'grid-column-end': dayColumn(month.end, 'end')}">{{ titleMonth(month.month, month.year) }}</h1>
+                <!-- Days title -->
+                <p v-for="(day, index) in allDays" class="group-day-title" :data-date="day.formatedDate" :data-month="day.month" :data-title="titleMonth(day.month, day.year)" :data-day="day.day" :data-dayweek="day.dayWeek" :style="{'grid-column': index + 2}">
+                    <span class="day-week-letter">{{ textDayFunc(day.dayWeek, 'letter') }}</span>
+                    <span class="day-week">{{ textDayFunc(day.dayWeek, 'word') }}</span>
+                    <span class="day-num">{{ day.day }}</span>
+                </p>
+                <!-- Columns for days (with group title) -->
+                <div v-for="(day, index) in allDays" class="day-grid" :data-date="day.formatedDate" :data-month="day.month" :data-title="titleMonth(day.month, day.year)" :data-day="day.day" :data-dayweek="day.dayWeek" :style="{'grid-column': index + 2}"> </div>
+                <!-- Projects -->
+                <div v-for="(project, index) in sortedProjects" class="div-project" @mouseover="hoverProject(index, 'project')" @mouseleave="leaveProject(index, 'project')" :data-line="index" :data-type="project.type" :style="{'grid-row': index + 3, 'grid-column-start': dayColumn(project.start, 'start'), 'grid-column-end': dayColumn(project.end, 'end')}"><span></span></div>
+            </div>
+        </section>
+
+
+        <!-- Screenshot for print ________________________________________________________________________________________________________________________ 
+        __________________________________________________________________________________________________________________________________________________ -->
+        <img id="img-print"/>
+
+
+        <!-- Repeat calandar & header a second time for screenshot _______________________________________________________________________________________ 
+        __________________________________________________________________________________________________________________________________________________ -->
+
+        <div id="canevas-copy" :style="{'--projects': projects.length, '--all-days':allDays.length}">
+            <header class="header-page" >
+                <h1>{{ title }}</h1>
+                <nav>
+                    <ul><li v-for="(type, index) in allType" :data-type="type">{{ type }}</li></ul>
+                </nav>
+                </header>
+            <section class="section-calendar" data-type="gantt" :style="{'--projects': projects.length, '--all-days':allDays.length}" >
+                <div class="calendar-container">
+                    <div class="bg-title-projects"></div>
+                    <div class="header-title-projects"><span></span></div>
+                    <h1 v-for="(project, index) in projects" class="title-project" :data-line="index" :data-type="project.type" @mouseover="hoverProject(index, 'title')" @mouseleave="leaveProject(index, 'title')" :style="{'grid-row': index + 3, 'grid-column': '1'}">{{ project.name }} <button v-on:click="goToProject(index, $event)">→</button></h1>
+                    <div v-for="holidays in holidays" class="div-holidays" :style="{'grid-column-start': dayColumn(holidays.start, 'start'), 'grid-column-end': dayColumn(holidays.end, 'end')}"><span></span></div>
+                    <h1 v-for="(month, index) in allMonths" class="div-month" :style="{'grid-column-start': dayColumn(month.start, 'start', index), 'grid-column-end': dayColumn(month.end, 'end')}">{{ titleMonth(month.month, month.year) }}</h1>
+                    <p v-for="(day, index) in allDays" class="group-day-title" :data-date="day.formatedDate" :data-month="day.month" :data-title="titleMonth(day.month, day.year)" :data-day="day.day" :data-dayweek="day.dayWeek" :style="{'grid-column': index + 2}">
+                        <span class="day-week-letter">{{ textDayFunc(day.dayWeek, 'letter') }}</span>
+                        <span class="day-week">{{ textDayFunc(day.dayWeek, 'word') }}</span>
+                        <span class="day-num">{{ day.day }}</span>
+                    </p>
+                    <div v-for="(day, index) in allDays" class="day-grid" :data-date="day.formatedDate" :data-month="day.month" :data-title="titleMonth(day.month, day.year)" :data-day="day.day" :data-dayweek="day.dayWeek" :style="{'grid-column': index + 2}"> </div>
+                    <div v-for="(project, index) in sortedProjects" class="div-project" @mouseover="hoverProject(index, 'project')" @mouseleave="leaveProject(index, 'project')" :data-line="index" :data-type="project.type" :style="{'grid-row': index + 3, 'grid-column-start': dayColumn(project.start, 'start'), 'grid-column-end': dayColumn(project.end, 'end')}"><span></span></div>
+                </div>
+            </section>
+        </div>
+
+    
+
+    </main>
+
+
+    <script src="js/vue.js"></script>
+    <script src="js/calendar-build.js"></script>
+    <script src="data.js"></script>
+    <script src="js/html2canevas.js"></script>
+
+
+    <script>
+        
+        var app =  new Vue({
+            el: "#app",
+            data: {
+                title: title,
+                scrollDirection: scrollDirection,
+                projects: projects,
+                allDays: allDays,
+                holidays: holidays,
+                allMonths: allMonths,
+                monthTemp: monthTemp,
+                allType: allType,
+                langSite: langSite,
+            },
+            computed: {
+                sortedProjects: function() {
+                    this.projects.sort( ( a, b) => {
+                        return new Date(a.start) - new Date(b.start);
+                    });
+                    return this.projects;
+                }
+            },
+            methods: {
+                titleMonth(month, year){
+                    let textMonth = textMonthFunc(month);
+                    let text = textMonth + " " + year;
+                    return text;
+                }, 
+                textDayFunc(num, type){
+                    let textDay = textDayFunc(num, type);
+                    return textDay;
+                },
+                dayColumn(dateValue, type, index){
+                    let calendarStartDate = new Date(calendarStart);
+                    let date = new Date(dateValue);
+
+                    let diffTime = Math.abs(date - calendarStartDate);
+                    let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+
+                    if(type == 'end'){
+                        if(dateValue == ""){
+                            diffDays = "";
+                        }else{
+                            diffDays = diffDays + 3;
+                        }
+                    }else{
+                        diffDays = diffDays + 2;
+                        if(index == 0){
+                            diffDays = 2;
+                        }
+                    }
+
+                    let text = diffDays;
+                    return text;
+                },
+                hoverProject(index, type){
+                    hoverProjectFunc(index, type);
+                },
+                leaveProject(index, type){
+                    leaveProjectFunc(index, type);
+                },   
+                print(){
+                    window.print();
+                } 
+            },
+        });
+    </script>
+</body>
+</html>
