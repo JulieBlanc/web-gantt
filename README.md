@@ -21,7 +21,7 @@ Warning:
 - No phone style adaption for now
 
 
-GitLab repo: [https://gitlab.com/JulieBlanc/web-gantt](https://gitlab.com/JulieBlanc/web-gantt)
+GitLab repo: [https://gitlab.com/JulieBlanc/web-gantt](https://gitlab.com/JulieBlanc/web-gantt) \
 Github repo: [https://github.com/JulieBlanc/web-gantt](https://github.com/JulieBlanc/web-gantt)
 
 ![Screenshot of an example page](style/screenshot-example.png)
